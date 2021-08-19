@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Module3HW7.Services;
 
 namespace Module3HW7
 {
@@ -46,15 +45,15 @@ namespace Module3HW7
 
         private void BackUp()
         {
-            _fileService.
+            _fileService.BackUp();
         }
 
         private async Task WriteAsync(string text)
         {
             await _semaphoreSlim.WaitAsync();
 
-            await Task.Run(() = > _loggerService.CreateLog(text, LogTypes.INFO));
-            await _streamWriter.FlushAsync();
+            await Task.Run(() => _loggerService.CreateLog(text, LogTypes.INFO));
+
             _semaphoreSlim.Release();
         }
     }

@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using Module3HW7.Services.Abstract;
 
-namespace Module3HW7.Services
+namespace Module3HW7
 {
     public class FileService : IFileService
     {
         private readonly IConfigService _configService;
+        private static readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1);
         private StreamWriter _streamWriter;
         private DirectoryInfo _directoryInfo;
         private string _filePath;
@@ -23,19 +24,33 @@ namespace Module3HW7.Services
             CreateDirectory(_configService.Config.LoggerConfig.DirectoryPath);
         }
 
+        public void Init(string directionName, string fileName, string fileExtension)
+        {
+            var path = GetFilePath(_configService.Config.LoggerConfig.DirectoryPath);
+            _filePath = path;
+            CreateDirectory(directionName);
+            _streamWriter = new StreamWriter(path, true);
+        }
+
         public void WriteToFile(string text)
         {
-            _streamWriter = new StreamWriter(_filePath, true);
             _streamWriter.WriteLine(text);
-            _streamWriter.Close();
         }
 
         public void BackUp()
         {
-            var directoryName = _configService.Config.LoggerConfig.DirectoryPath;
+            var directoryName = _configService.Config.LoggerConfig.BackUpDirectoryName;
             CreateDirectory(directoryName);
             File.Copy(_filePath, GetFilePath(directoryName, _count.ToString()));
             _count++;
+        }
+
+        public async Task WriteToFileAsync(string text)
+        {
+            await _semaphoreSlim.WaitAsync();
+            await _streamWriter.WriteLineAsync(text);
+            await _streamWriter.FlushAsync();
+            _semaphoreSlim.Release();
         }
 
         private string GetFilePath(string directoryName, string count = "")

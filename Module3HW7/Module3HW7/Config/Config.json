@@ -4,6 +4,7 @@
     "NameFormat": "hh.mm.ss dd.MM.yyyy",
     "DirectoryPath": "Logs/",
     "FileExtension": ".txt",
-    "NumbersOfLinesToBackUp": 10
+    "NumbersOfLinesToBackUp": 10,
+    "BackUpDirectoryName": "BackUp"
   }
 }

@@ -9,15 +9,14 @@ namespace Module3HW7
         public void Run()
         {
             var serviceProvider = new ServiceCollection()
-                .AddTransient<LoggerService>()
+                .AddTransient<ILoggerService, LoggerService>()
                 .AddTransient<IConfigService, ConfigService>()
-                .AddTransient<IFileService, FileService>()
+                .AddSingleton<IFileService, FileService>()
                 .AddTransient<Starter>()
                 .BuildServiceProvider();
 
             var starter = serviceProvider.GetService<Starter>();
             starter.Run();
-
         }
     }
 }
