@@ -6,7 +6,7 @@ namespace Module3HW7
     {
         public static void Main(string[] args)
         {
-            var starter = new Starter();
+            var starter = new AppStarter();
             starter.Run();
         }
     }

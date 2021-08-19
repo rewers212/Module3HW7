@@ -2,23 +2,60 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Module3HW7.Services;
 
 namespace Module3HW7
 {
     public class Starter
     {
-        private readonly LoggerService _logger;
+        private static readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1);
+        private readonly LoggerService _loggerService;
+        private readonly FileService _fileService;
 
-        public Starter(LoggerService logger)
+        public Starter(
+            LoggerService loggerService,
+            FileService fileService)
         {
-            _logger = logger;
+            _loggerService = loggerService;
+            _fileService = fileService;
         }
 
-        internal void Run()
+        public void Run()
         {
-            _logger.FirstMethod();
-            _logger.SecondMethod();
+            _loggerService.BackUpRef += BackUp;
+
+            Task.Run(() =>
+            {
+                for (var i = 0; i < 50; i++)
+                {
+                    var k = i;
+                    Task.Run(async () => { await WriteAsync($"Method 2 {k}"); });
+                }
+            });
+            Task.Run(() =>
+            {
+                for (var i = 100; i < 150; i++)
+                {
+                    var k = i;
+                    Task.Run(async () => { await WriteAsync($"Method 2 {k}"); });
+                }
+            });
+        }
+
+        private void BackUp()
+        {
+            _fileService.
+        }
+
+        private async Task WriteAsync(string text)
+        {
+            await _semaphoreSlim.WaitAsync();
+
+            await Task.Run(() = > _loggerService.CreateLog(text, LogTypes.INFO));
+            await _streamWriter.FlushAsync();
+            _semaphoreSlim.Release();
         }
     }
 }

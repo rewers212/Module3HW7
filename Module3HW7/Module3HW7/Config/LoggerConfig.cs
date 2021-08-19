@@ -12,5 +12,6 @@ namespace Module3HW7
         public string NameFormat { get; set; }
         public string DirectoryPath { get; set; }
         public string FileExtension { get; set; }
+        public int NumbersOfLinesToBackUp { get; set; }
     }
 }

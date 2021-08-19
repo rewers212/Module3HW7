@@ -26,6 +26,18 @@ namespace Module3HW7
 
         public event Action BackUpRef;
 
-        public void CreateLog(string text, )
+        public void CreateLog(string text, LogTypes logTypes)
+        {
+            var log = $"{DateTime.UtcNow.ToString(_loggerConfig.TimeFormat)} {logTypes}: {text}";
+            _fileService.WriteToFile(log);
+        }
+
+        private void BackUp(int count)
+        {
+            if (count%_loggerConfig.)
+            {
+                BackUpRef.Invoke();
+            }
+        }
     }
 }
